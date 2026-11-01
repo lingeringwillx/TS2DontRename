@@ -7,6 +7,8 @@ DWORD WINAPI MainThread(LPVOID param)
 
     if (IsLargeAddressAware(modBase))
     {
+        //cas = nTSCASCore::CASSystem();
+        //cas->PopulateSimNames();
         unsigned char fun1Bytes[16] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
                                        0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90};
         WriteToMemory((DWORD)0x00EF2C14, (char*)fun1Bytes, sizeof(fun1Bytes) / sizeof(*fun1Bytes));
