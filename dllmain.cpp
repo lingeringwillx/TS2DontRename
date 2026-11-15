@@ -42,7 +42,7 @@ DWORD WINAPI MainThread(LPVOID param)
                           0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}}
         };
 
-        for(const patch_t &patch: patches)
+        for(auto &patch: patches)
         {
             WriteToMemory(modBase, patch);
         }
