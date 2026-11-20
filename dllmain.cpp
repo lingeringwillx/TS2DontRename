@@ -34,6 +34,7 @@ DWORD WINAPI MainThread(LPVOID param)
     {
         const vector<patch_t> patches =
         {
+            //inside cTSGameStateController::ImportTemplateNeighborhoodData
             //nTSCASCore::CASSystem()->PopulateSimNames()
             //overwrite with NOPs
             {0x00AF2C14, {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
