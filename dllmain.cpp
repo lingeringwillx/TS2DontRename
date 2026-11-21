@@ -9,12 +9,6 @@ typedef struct {
     vector<BYTE> bytes;
 } patch_t;
 
-bool IsLargeAddressAware(DWORD modBase)
-{
-    PIMAGE_NT_HEADERS ntHeader = (PIMAGE_NT_HEADERS)((DWORD_PTR)modBase + ((PIMAGE_DOS_HEADER)modBase)->e_lfanew);
-    return (ntHeader->FileHeader.Characteristics & IMAGE_FILE_LARGE_ADDRESS_AWARE) != 0;
-}
-
 void WriteToMemory(DWORD modBase, const patch_t &patch)
 {
     DWORD oldProtection;
@@ -28,23 +22,20 @@ void WriteToMemory(DWORD modBase, const patch_t &patch)
 
 DWORD WINAPI MainThread(LPVOID param)
 {
-    const DWORD modBase = reinterpret_cast<DWORD>(GetModuleHandleA(NULL));
+    DWORD modBase = reinterpret_cast<DWORD>(GetModuleHandleA(NULL));
 
-    if (IsLargeAddressAware(modBase))
+    const vector<patch_t> patches =
     {
-        const vector<patch_t> patches =
-        {
-            //inside cTSGameStateController::ImportTemplateNeighborhoodData
-            //nTSCASCore::CASSystem()->PopulateSimNames()
-            //overwrite with NOPs
-            {0x00AF2C14, {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
-                          0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}}
-        };
+        //inside cTSGameStateController::ImportTemplateNeighborhoodData
+        //nTSCASCore::CASSystem()->PopulateSimNames()
+        //overwrite with NOPs
+        {0x00AF2C14, {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
+                      0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}}
+    };
 
-        for (auto &patch: patches)
-        {
-            WriteToMemory(modBase, patch);
-        }
+    for (auto &patch: patches)
+    {
+        WriteToMemory(modBase, patch);
     }
 
     FreeLibraryAndExitThread((HMODULE)param, 0);
